@@ -9,6 +9,7 @@
 
 game functions:
     .rollDice() returns string representation of roll, e.g. '12'
+    .nextPlayer()
     .endRound() returns gameState={lostPlayers[] , lastRoundLoser} the array contains the players who are out, the lastRoundLoser is the player who lost the last round.
         endRound also shifts the turn to the next player.
         Method should be used when a player 'lifts' the cup.
