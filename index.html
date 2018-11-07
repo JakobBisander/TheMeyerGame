@@ -1,0 +1,67 @@
+<html>
+
+
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <title>A Multiplayer Game</title>
+
+</head>
+<style>
+
+    .flex-container {
+        display: flex;
+        background-color: DodgerBlue;
+        }
+
+        .flex-container > div {
+        background-color: #f1f1f1;
+        margin: 10px;
+        padding: 20px;
+        font-size: 30px;
+        }
+
+        </style>
+<h1>
+    Welcome to distributed Meyer!
+</h1>
+
+<body>
+    <div id="Scoreboard">
+
+        Scoreboard: <textarea rows="6" cols="6" max-width="6" max-height="6"></textarea>
+
+    </div>
+
+    <div id="buttonsandfields">
+
+        <p id="lie"> Lie: <input type="text" value=""> <input type="text" id="2nd lie" value=""></p>
+        <p id="liebutton"> <button type="button">Lie</button></p>
+
+    </div>
+    <div class="flex-container">
+
+        <div id="1st die"> 1st die: <input type="text" id="1st die" value=""></div>
+        <div id="2nd die"> 2nd die: <input type="text" id="2nd die" value=""></div>
+
+    </div>
+
+
+    <div class="flex-container">
+
+        <div><button id="riskItButton" type="button">Risk it!</button></div>
+        <div><button id="rollButton" type="button">Roll</button></div>
+        <div><button id="liftButton" type="button">Lift!</button></div>
+        <div><button id="callButton" type="button">Call!</button></div>
+
+    </div>
+
+    <div id="log">
+        Log: <textarea rows="3" cols="30"></textarea>
+
+    </div>
+
+</body>
+<script src="/static/client.js"></script>
+
+</html>

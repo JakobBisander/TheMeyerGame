@@ -1,0 +1,27 @@
+- There or there over
+- Up to 6 players per room
+- Input to be able put in if you want to "lie"
+
+
+
+
+
+game funktioner: 
+    .players
+    .removePlayer(player)
+    .rollDice() returns [die1, die2]
+    .lift()
+    .call(data, callingPlayer)
+    .lie(data)
+    .risk()
+
+
+server funktioner:
+    'addPlayers', data.name // Adds player to the game, and emits the name of the newly joined player
+    'leave', // Removes the given player from the game
+    'start', // Starts the game
+    'roll', // Requests a random roll from the game, and emits it back to the client that requested it
+    'call', data.die1/die2 // Signifies a call to the game. Emits to all clients that the given player has called the given number. 
+                                Also emits the relevant next player that its their turn
+    'lift', // Signifies a lift to the game - Needs to implement an emit
+    'lie', data.die1/die2 // Signifies a lie to the game - Needs to implement an emit  
