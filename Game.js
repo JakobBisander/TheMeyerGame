@@ -75,7 +75,7 @@ module.exports = class Game {
     const lostPlayers = this.checkScore();
     this.nextPlayer();
 
-    return { lostPlayers, lastRoundLoser };
+    return { lostPlayers, lastRoundLoser, players: this.players };
   }
 
   checkScore() {

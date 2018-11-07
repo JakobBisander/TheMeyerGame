@@ -25,7 +25,6 @@ let game;
 io.on('connection', function(socket) {
   socket.on('addPlayer', function(data) {
     const player = new Player(data.name, socket.id);
-    // console.log('Adding player: ', player.name);
     players.push(player);
     socket.emit('playerJoined', player);
   });
@@ -37,25 +36,34 @@ io.on('connection', function(socket) {
     });
     game.removePlayer(leavingPlayer);
   });
+
   // Called whenever a player loses connection to the server
   socket.on('disconnect', function() {
-    // const disconnectingPlayer = game.players.filter(player => {
-    //   return player.socketId === socket.id;
-    // });
-    game.removePlayer(disconnectingPlayer);
+    if (typeof game === 'undefined') {
+      // If the game has not yet started, the disconnecting player should only be removed from the players array
+    } else {
+      // If the game has started, the disconnecting player should be removed from the game instance
+      const disconnectingPlayer = game.players.filter(player => {
+        return player.socketId === socket.id;
+      });
+      game.removePlayer(disconnectingPlayer);
+    }
   });
 
   // Called whenever a player decides to start the game, with the currently connected players
   socket.on('start', function() {
     game = new Game(players);
+
     const nextPlayer = game.getCurrentPlayer();
 
     socket.emit('newRound', gameState);
-    io.to(nextPlayer.socketId).emit('yourTurn', data);
+
+    io.to(nextPlayer.socketId).emit('yourTurn');
   });
+
   // Called whenever a player requests a new roll from the server
   socket.on('roll', function() {
-    io.to(socket.id).emit('returnRoll', game.rollDice());
+    io.to(socket.id).emit('returnRoll', game.rollDice()); // Format is '56'
   });
 
   // Called whenever a player decides to lift on the former player
@@ -65,10 +73,11 @@ io.on('connection', function(socket) {
     const nextPlayer = game.getCurrentPlayer();
 
     socket.emit('newRound', gameState);
-    io.to(nextPlayer.socketId).emit('yourTurn', data);
+    io.to(nextPlayer.socketId).emit('yourTurn');
   });
 
   // Called whenever a player makes a new call
+  // Game already knows from the previous roll, what was actually rolled
   socket.on('call', function(data) {
     const callingPlayer = game.players.filter(player => {
       return player.socketId === socket.id;
@@ -77,22 +86,35 @@ io.on('connection', function(socket) {
     const nextPlayer = game.getCurrentPlayer();
 
     const newData = {
-      data,
+      lastRoll: data,
       playerName: callingPlayer.name
     };
-    Object.assign(data, newData);
 
-    socket.emit('playerCalled', data);
-    io.to(nextPlayer.socketId).emit('yourTurn', data);
+    socket.emit('playerCalled', newData);
+    io.to(nextPlayer.socketId).emit('yourTurn');
   });
 
   // Called whenever a player calls a lie
   socket.on('lie', function(data) {
-    game.lie(data);
+    const callingPlayer = game.players.filter(player => {
+      return player.socketId === socket.id;
+    });
+
+    const idiot = game.setLied(data);
+    if (!idiot) {
+      io.to(callingPlayer.socketId).emit('badLiar');
+    } else {
+      socket.emit('playerCalled', data);
+      io.to(nextPlayer.socketId).emit('yourTurn');
+    }
   });
 
   // Called whenever a player wishes to roll blindly and hope for a high enough roll
   socket.on('risk', function() {
-    game.risk();
+    game.rollDice();
+    game.nextPlayer();
+    const nextPlayer = game.getCurrentPlayer();
+
+    io.to(nextPlayer.socketId).emit('yourTurn', data);
   });
 });
