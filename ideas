@@ -6,14 +6,14 @@
 
 
 
-game funktioner: 
-    .players
-    .removePlayer(player)
-    .rollDice() returns [die1, die2]
-    .lift()
-    .call(data, callingPlayer)
-    .lie(data)
-    .risk()
+
+game functions:
+    .rollDice() returns string representation of roll, e.g. '12'
+    .endRound() returns gameState={lostPlayers[] , lastRoundLoser} the array contains the players who are out, the lastRoundLoser is the player who lost the last round.
+        endRound also shifts the turn to the next player.
+        Method should be used when a player 'lifts' the cup.
+    .getCurrentPlayer() returns the current player.
+    .setLied(liedDice) method used when a player lied. the liedDice is the dice the player lied to.
 
 
 server funktioner:

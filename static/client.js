@@ -1,4 +1,14 @@
+//Variables
 var socket = io();
+liftButton = document.getElementById('liftButton');
+rollButton = document.getElementById('rollButton');
+riskItButton = document.getElementById('riskItButton');
+lieButton = document.getElementById('lieButton');
+die1Field = document.getElementById('1stDie');
+die2Field = document.getElementById('2ndDie');
+lie1Field = document.getElementById('1stLie');
+lie2Field = document.getElementById('2ndLie');
+lieButton = document.getElementById('lieButton');
 
 //  Listeners
 socket.on('returnRoll', function(data) {
@@ -11,14 +21,30 @@ socket.on('playerJoined', function(data) {
   // Add data.name to log
 });
 
-function endTurn(){
-  document.getElementsByClassName("").style.visibility = "hidden";
+socket.on('yourTurn', function(data) {});
+
+socket.on('newRound', function(data) {
+  // A new round is starting, and someone just lost.
+  // Data should contain the entire gamestate
+});
+
+function endTurn() {
+  document.getElementsByClassName('').style.visibility = 'hidden';
 }
 
-document.getElementById("liftButton").addEventListener("click", () =>
-sendLift(0)
-document
- )
+liftButton.addEventListener('click', function() {
+  sendLift();
+  endTurn();
+});
+
+rollButton.addEventListener('click', function() {
+  getRoll();
+});
+
+riskButton.addEventListener('click', function() {
+  sendRisk();
+  endTurn();
+});
 
 // Emits
 function joinGame(player) {

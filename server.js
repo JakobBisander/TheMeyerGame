@@ -25,46 +25,55 @@ let game;
 io.on('connection', function(socket) {
   socket.on('addPlayer', function(data) {
     const player = new Player(data.name, socket.id);
-    console.log('Adding player: ', player.name);
+    // console.log('Adding player: ', player.name);
     players.push(player);
     socket.emit('playerJoined', player);
   });
 
+  // Called whenever a player willingly leaves
   socket.on('leave', function() {
     const leavingPlayer = game.players.filter(player => {
       return player.socketId === socket.id;
     });
     game.removePlayer(leavingPlayer);
   });
-
+  // Called whenever a player loses connection to the server
   socket.on('disconnect', function() {
-    const disconnectingPlayer = game.players.filter(player => {
-      return player.socketId === socket.id;
-    });
+    // const disconnectingPlayer = game.players.filter(player => {
+    //   return player.socketId === socket.id;
+    // });
     game.removePlayer(disconnectingPlayer);
   });
 
+  // Called whenever a player decides to start the game, with the currently connected players
   socket.on('start', function() {
     game = new Game(players);
-  });
+    const nextPlayer = game.getCurrentPlayer();
 
+    socket.emit('newRound', gameState);
+    io.to(nextPlayer.socketId).emit('yourTurn', data);
+  });
+  // Called whenever a player requests a new roll from the server
   socket.on('roll', function() {
     io.to(socket.id).emit('returnRoll', game.rollDice());
   });
 
+  // Called whenever a player decides to lift on the former player
   socket.on('lift', function() {
-    const playerObject = game.endRound();
+    const gameState = game.endRound();
 
     const nextPlayer = game.getCurrentPlayer();
-    //Noget med nogle emits til clients
+
+    socket.emit('newRound', gameState);
+    io.to(nextPlayer.socketId).emit('yourTurn', data);
   });
 
+  // Called whenever a player makes a new call
   socket.on('call', function(data) {
     const callingPlayer = game.players.filter(player => {
       return player.socketId === socket.id;
     });
-    // console.log('Calling player: ', callingPlayer.name);
-    // game.call(data, callingPlayer);
+
     const nextPlayer = game.getCurrentPlayer();
 
     const newData = {
@@ -77,10 +86,12 @@ io.on('connection', function(socket) {
     io.to(nextPlayer.socketId).emit('yourTurn', data);
   });
 
+  // Called whenever a player calls a lie
   socket.on('lie', function(data) {
     game.lie(data);
   });
 
+  // Called whenever a player wishes to roll blindly and hope for a high enough roll
   socket.on('risk', function() {
     game.risk();
   });
