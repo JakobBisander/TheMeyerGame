@@ -1,18 +1,18 @@
 {
-  "name": "dicegame",
-  "version": "1.0.0",
-  "description": "A distributed multiplayer dice game",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "keywords": [
-    "dice"
-  ],
-  "author": "Jakob W. B.",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.4",
-    "socket.io": "^2.1.1"
-  }
+	"name": "dicegame",
+	"version": "1.0.0",
+	"description": "A distributed multiplayer dice game",
+	"main": "index.js",
+	"scripts": {
+		"dev": "./node_modules/.bin/nodemon server.js",
+		"test": "test"
+	},
+	"keywords": ["dice"],
+	"author": "Jakob W. B.",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.16.4",
+		"nodemon": "^1.18.6",
+		"socket.io": "^2.1.1"
+	}
 }
