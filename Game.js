@@ -4,9 +4,9 @@ module.exports = class Game {
     this.players = players;
     this.currentPlayer = 0;
     this.score = [];
-    this.dice = '11';
+    this.dice = '00';
     this.previousDice = '00';
-    this.liedDice = -1;
+    this.liedDice = '00';
     this.playerLied = false;
     this.rules = [
       '12',
@@ -36,12 +36,23 @@ module.exports = class Game {
   rollDice() {
     this.previousDice = this.playerLied ? this.liedDice : this.dice;
     this.playerLied = false;
-    this.dice = '' + this.Random() + this.Random();
+    this.liedDice = '00';
+    this.dice = sortDices(this.Random(), this.Random());
     return this.dice;
   }
+
+  sortDices(d1, d2) {
+    if (d1 === d2) return '' + d1 + d2;
+    if ((d1 === 2 || d1 === 3) && d2 === 1) return '' + d2 + d1;
+    if (d1 === 1 && (d2 === 2 || d2 === 3)) return '' + d1 + d2;
+    if (d2 > d1) return '' + d2 + d1;
+    return '' + d1 + d2;
+  }
+
   Random() {
     return Math.floor(Math.random() * 6) + 1;
   }
+
   isHigher(dice) {
     return this.rules.indexOf(dice) < this.rules.indexOf(this.previousDice);
   }
@@ -98,8 +109,13 @@ module.exports = class Game {
     return this.players[this.currentPlayer];
   }
 
-  setLied(playerLied, liedDice) {
-    this.playerLied = playerLied;
+  setLied(liedDice) {
+    if (!this.isHigher(liedDice)) {
+      return false;
+    }
+    this.playerLied = true;
     this.liedDice = liedDice;
+    this.nextPlayer();
+    return true;
   }
 };

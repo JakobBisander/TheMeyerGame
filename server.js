@@ -23,45 +23,58 @@ let players = [];
 let game;
 
 io.on('connection', function(socket) {
-	console.log('client with id', socket.id, 'connected');
-
 	socket.on('addPlayer', function(data) {
 		const player = new Player(data.name, socket.id);
-		console.log('Adding player: ', player.name);
+		// console.log('Adding player: ', player.name);
 		players.push(player);
 		socket.emit('playerJoined', player);
 	});
 
+	// Called whenever a player willingly leaves
 	socket.on('leave', function() {
 		const leavingPlayer = game.players.filter(player => {
 			return player.socketId === socket.id;
 		});
 		game.removePlayer(leavingPlayer);
 	});
-
-	socket.on('disconnect', function(socket) {
-		console.log(socket);
-
+	// Called whenever a player loses connection to the server
+	socket.on('disconnect', function() {
 		// const disconnectingPlayer = game.players.filter(player => {
 		//   return player.socketId === socket.id;
 		// });
-		// game.removePlayer(disconnectingPlayer);
+		game.removePlayer(disconnectingPlayer);
 	});
 
+	// Called whenever a player decides to start the game, with the currently connected players
 	socket.on('start', function() {
-		if (players.length === 0) {
-			socket.emit('error', { message: 'error not enough players' });
-			return;
-		}
 		game = new Game(players);
-	});
+		const nextPlayer = game.getCurrentPlayer();
 
+		socket.emit('newRound', gameState);
+		io.to(nextPlayer.socketId).emit('yourTurn', data);
+	});
+	// Called whenever a player requests a new roll from the server
 	socket.on('roll', function() {
 		io.to(socket.id).emit('returnRoll', game.rollDice());
 	});
 
+	// Called whenever a player decides to lift on the former player
 	socket.on('lift', function() {
-		const playerObject = game.endRound();
+		const gameState = game.endRound();
+
+		const nextPlayer = game.getCurrentPlayer();
+
+		socket.emit('newRound', gameState);
+		io.to(nextPlayer.socketId).emit('yourTurn', data);
+	});
+
+	// Called whenever a player makes a new call
+	socket.on('call', function(data) {
+		const callingPlayer = game.players.filter(player => {
+			return player.socketId === socket.id;
+		});
+
+		const nextPlayer = game.getCurrentPlayer();
 
 		const nextPlayer = game.getCurrentPlayer();
 		//Noget med nogle emits til clients
