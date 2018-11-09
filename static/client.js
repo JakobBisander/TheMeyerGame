@@ -1,3 +1,5 @@
+const logTextarea = document.getElementById('logTextarea');
+var socket = io('http://localhost:5000');
 //Variables
 var socket = io();
 const liftButton = document.getElementById('liftButton');
@@ -10,6 +12,10 @@ const lie1Field = document.getElementById('1stLie');
 const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
 
+socket.on('connect', () => {
+  console.log('connected to server');
+  socket.emit('addPlayer', { name: 'Simon Fucking Sinding' });
+});
 //  Listeners
 socket.on('playerCalled', function(data) {
   const { lastRoll, playerName } = data;
@@ -123,7 +129,6 @@ function sendLie(die1, die2) {
 function sendRisk() {
   socket.emit('risk');
 }
-
 // setInterval(function() {
 //   socket.emit('movement', movement);
 // }, 1000 / 60);

@@ -1,71 +1,91 @@
 <html>
-
-
-<head>
+  <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 
     <title>A Multiplayer Game</title>
-
-</head>
-<style>
-
+  </head>
+  <style>
     .flex-container {
-        display: flex;
-        background-color: DodgerBlue;
-        }
+      display: flex;
+      background-color: DodgerBlue;
+    }
 
-        .flex-container > div {
-        background-color: #f1f1f1;
-        margin: 10px;
-        padding: 20px;
-        font-size: 30px;
-        }
+    .flex-container > div {
+      background-color: #f1f1f1;
+      margin: 10px;
+      padding: 20px;
+      font-size: 30px;
+    }
+  </style>
+  <h1>Welcome to distributed Meyer!</h1>
 
-        </style>
-<h1>
-    Welcome to distributed Meyer!
-</h1>
-
-<body>
+  <body>
     <div>
-
-        Scoreboard: <textarea id="scoreBoard" rows="6" cols="6" max-width="6" max-height="6"></textarea>
-
+      Scoreboard:
+      <textarea
+        id="scoreBoard"
+        rows="6"
+        cols="6"
+        max-width="6"
+        max-height="6"
+      ></textarea>
     </div>
 
     <div id="buttonsandfields">
-
-        <div id="lie"> Lie: <input type="number" class="playControls" min="1" max="6" id="1stLie" value="">
-            <input type="number" min="1" max="6" id="2ndLie" class="playControls" value="">
-        </div>
-        <div>
-            <button id="lieButton" class="playControls" type="button">Lie</button>
-        </div>
-
+      <div id="lie">
+        Lie:
+        <input
+          type="number"
+          class="playControls"
+          min="1"
+          max="6"
+          id="1stLie"
+          value=""
+        />
+        <input
+          type="number"
+          min="1"
+          max="6"
+          id="2ndLie"
+          class="playControls"
+          value=""
+        />
+      </div>
+      <div>
+        <button id="lieButton" class="playControls" type="button">Lie</button>
+      </div>
     </div>
     <div class="flex-container">
-
-        <div> 1st die: <input id="1stDie" class="playControls" type="text" value=""></div>
-        <div> 2nd die: <input id="2ndDie" class="playControls" type="text" value=""></div>
-
+      <div>
+        1st die: <input id="1stDie" class="playControls" type="text" value="" />
+      </div>
+      <div>
+        2nd die: <input id="2ndDie" class="playControls" type="text" value="" />
+      </div>
     </div>
-
 
     <div class="flex-container">
-
-        <div><button id="riskItButton" class="playControls" type="button">Risk it!</button></div>
-        <div><button id="rollButton" class="playControls" type="button">Roll</button></div>
-        <div><button id="liftButton" class="playControls" type="button">Lift!</button></div>
-        <div><button id="callButton" class="playControls" type="button">Call!</button></div>
-
+      <div>
+        <button id="riskItButton" class="playControls" type="button">
+          Risk it!
+        </button>
+      </div>
+      <div>
+        <button id="rollButton" class="playControls" type="button">Roll</button>
+      </div>
+      <div>
+        <button id="liftButton" class="playControls" type="button">
+          Lift!
+        </button>
+      </div>
+      <div>
+        <button id="callButton" class="playControls" type="button">
+          Call!
+        </button>
+      </div>
     </div>
 
-    <div id="log">
-        Log: <textarea id="log" rows="3" cols="30"></textarea>
-
-    </div>
-
-</body>
-<script src="./static/client.js"></script>
-
+    <div id="log">Log: <textarea id="log" rows="3" cols="30"></textarea></div>
+  </body>
+  <script src="./static/client.js"></script>
 </html>
