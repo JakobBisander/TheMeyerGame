@@ -1,6 +1,7 @@
 var socket = io('http://localhost:5000');
 //Variables
 var socket = io();
+const logTextarea = document.getElementById('logTextarea');
 const liftButton = document.getElementById('liftButton');
 const rollButton = document.getElementById('rollButton');
 const riskItButton = document.getElementById('riskItButton');
@@ -12,8 +13,8 @@ const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
 const startButton = document.getElementById('startButton');
 const nameField = document.getElementById('nameField');
-const logTextarea = document.getElementById('logTextarea');
-
+const playControls = Array.from(document.getElementsByClassName('playControls')
+);
 socket.on('connect', () => {
   console.log('connected to server');
   socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' });
@@ -71,10 +72,7 @@ socket.on('badLiar', function() {
 
 
 function endTurn() {
-  const playcontrols = Array.from(
-    document.getElementsByClassName('playControls')
-  );
-  playcontrols.map(el => el.setAttribute('disabled', true));
+  playControls.map(el => el.setAttribute('disabled', true));
 }
 
 function log(logString) {
@@ -83,11 +81,11 @@ function log(logString) {
 
 startButton.addEventListener('click', function() {
   joinGame({name: nameField.value});
-  const startControls = Array.from(document.getElementsByClassName('startControls'));;
-  startControls.map(el => el.style.visbility = 'hidden');
-  
-  const playcontrols = Array.from(document.getElementsByClassName('playControls'));
-  playcontrols.map(el => el.style.visbility = 'visible');
+  const startControls = document.getElementById('startControls');
+  startControls.style.visibility = 'hidden';
+  playControls.map(el => el.setAttribute('hidden', 'false'));
+  document.getElementById('scoreBoardDiv').setAttribute('hidden', 'false');
+  logTextArea.setAttribute('hidden', 'false');
  });
 
 liftButton.addEventListener('click', function() {
