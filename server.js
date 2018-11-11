@@ -26,11 +26,9 @@ io.on('connection', function(socket) {
 	socket.on('addPlayer', function(data) {
 		const player = new Player(data.name, socket.id);
 		players.push(player);
-		socket.emit('playerJoined', player);
+		io.emit('playerJoined', player);
 		if(players.length>=2){
-			for(pla of players){
-				io.to(pla.socketId).emit('gameReady');
-			}
+			io.emit('gameReady');
 		}
 	});
 

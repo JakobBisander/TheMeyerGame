@@ -69,7 +69,9 @@ socket.on('badLiar', function() {
   // The player tried to lie with a too low number
 });
 socket.on('gameReady',function(){
-  startButton.style.visibility='visible';
+  log('Game ready');
+  console.log(startButton);
+  startButton.hidden=false;
 });
 
 
