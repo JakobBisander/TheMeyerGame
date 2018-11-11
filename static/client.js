@@ -17,7 +17,7 @@ const playControls = Array.from(document.getElementsByClassName('playControls')
 );
 socket.on('connect', () => {
   console.log('connected to server');
-  socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' });
+  //socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' });
 });
 //  Listeners
 socket.on('playerCalled', function(data) {
@@ -68,6 +68,9 @@ socket.on('newRound', function(data) {
 socket.on('badLiar', function() {
   // The player tried to lie with a too low number
 });
+socket.on('gameReady',function(){
+  startButton.style.visibility='visible';
+});
 
 
 function endTurn() {
@@ -81,7 +84,7 @@ logTextArea.value += logString + '\n';
 joinButton.addEventListener('click', function() {
   joinGame({name: nameField.value});
   const startControls = Array.from(document.getElementsByClassName('startControls'));;
-  startControls.map(el => el.style.visbility = 'hidden');
+  startControls.map(el => el.style.visibility = 'hidden');
   
   
  });

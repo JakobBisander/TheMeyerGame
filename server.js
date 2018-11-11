@@ -27,6 +27,11 @@ io.on('connection', function(socket) {
 		const player = new Player(data.name, socket.id);
 		players.push(player);
 		socket.emit('playerJoined', player);
+		if(players.length>=2){
+			for(pla of players){
+				io.to(pla.socketId).emit('gameReady');
+			}
+		}
 	});
 
 	// Called whenever a player willingly leaves
