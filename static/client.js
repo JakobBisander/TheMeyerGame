@@ -19,7 +19,7 @@ disablePlayControls();
 
 socket.on('connect', () => {
 	console.log('connected to server');
-	socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' + Date.now() });
+	//socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' + Date.now() });
 });
 //  Listeners
 socket.on('playerCalled', function(data) {
@@ -65,9 +65,9 @@ socket.on('yourTurn', function(data) {
 
 socket.on('newRound', function(data) {
 	const scoreBoard = document.getElementById('scoreBoard');
-	scoreBoard.value = 'The score is ';
+	scoreBoard.value = 'The score is \n';
 	for (const player of data.players) {
-		scoreBoard.value += `${player.name} ${player.score},`;
+		scoreBoard.value += `${player.name} ${player.score}\n`;
 	}
 	// A new round is starting, and someone just lost.
 	// Data should contain the entire gamestate
