@@ -11,7 +11,8 @@ const die2Field = document.getElementById('2ndDie');
 const lie1Field = document.getElementById('1stLie');
 const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
-const startButton = document.getElementById('startButton');
+const startButton = document.getElementById('startButton'); 
+const joinButton = document.getElementById('joinButton'); 
 const nameField = document.getElementById('nameField');
 const playControls = Array.from(document.getElementsByClassName('playControls')
 );
@@ -70,28 +71,41 @@ socket.on('badLiar', function() {
 });
 
 
-
 function endTurn() {
   playControls.map(el => el.setAttribute('disabled', true));
 }
 
 function log(logString) {
-  logTextArea.value += logString;
+logTextArea.value += logString + '\n';
 }
 
-startButton.addEventListener('click', function() {
+joinButton.addEventListener('click', function() {
   joinGame({name: nameField.value});
-  const startControls = document.getElementById('startControls');
-  startControls.style.visibility = 'hidden';
-  playControls.map(el => el.setAttribute('hidden', 'false'));
-  document.getElementById('scoreBoardDiv').setAttribute('hidden', 'false');
-  logTextArea.setAttribute('hidden', 'false');
+  const startControls = Array.from(document.getElementsByClassName('startControls'));;
+  startControls.map(el => el.style.visbility = 'hidden');
+  
+  
  });
+
+ 
+startButton.addEventListener('click', function() {
+ socket.emit('start');
+ const playcontrols = Array.from(document.getElementsByClassName('playControls'));
+  playcontrols.map(el => el.style.visbility = 'visible'); 
+})
 
 liftButton.addEventListener('click', function() {
   sendLift();
   endTurn();
 });
+
+joinButton.addEventListener('click', function() {
+  if ( nameField.value === ""){
+    alert("Name must be filled out");
+    return false;
+  }
+}
+
 
 rollButton.addEventListener('click', function() {
   getRoll();

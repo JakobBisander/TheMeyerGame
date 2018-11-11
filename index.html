@@ -27,11 +27,13 @@
   <body>
       <div>
           Enter name:
-          1st die: <input id="nameField" class="startControls" type="text" value="" />
-          <button id="startButton" class="startControls" type="button">Start Meyer!</button>
+          <input id="nameField" class="startControls" type="text" value="" />
+          <button id="joinButton" class="startControls" type="button">Join Game</button>
+          <button id="startButton" class="startControls" type="button">Start Game</button>
+
         </div>
 
-    <div>
+    <div hidden>
       Scoreboard:
       <textarea
         id="scoreBoard"
@@ -40,9 +42,9 @@
         max-width="6"
         max-height="6"
       ></textarea>
-    </div>
+    </div hidden>
 
-    <div id="buttonsandfields">
+    <div id="buttonsandfields" hidden>
       <div id="lie">
         Lie:
         <input
@@ -65,17 +67,17 @@
       <div>
         <button id="lieButton" class="playControls" type="button">Lie</button>
       </div>
-    </div>
-    <div class="flex-container">
+    </div hidden>
+    <div class="flex-container" hidden>
       <div>
         1st die: <input id="1stDie" class="playControls" type="text" value="" />
       </div>
       <div>
         2nd die: <input id="2ndDie" class="playControls" type="text" value="" />
       </div>
-    </div>
+    </div hidden>
 
-    <div class="flex-container">
+    <div class="flex-container" hidden>
       <div>
         <button id="riskItButton" class="playControls" type="button">
           Risk it!
@@ -94,7 +96,7 @@
           Call!
         </button>
       </div>
-    </div>
+    </div hidden>
 
     <div id="log">Log: <textarea id="log" rows="3" cols="30"></textarea></div>
   </body>
