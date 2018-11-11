@@ -11,10 +11,12 @@ const die2Field = document.getElementById('2ndDie');
 const lie1Field = document.getElementById('1stLie');
 const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
+const startButton = document.getElementById('startButton');
+const nameField = document.getElementById('nameField');
 
 socket.on('connect', () => {
   console.log('connected to server');
-  socket.emit('addPlayer', { name: 'Simon Fucking Sinding' });
+  socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' });
 });
 //  Listeners
 socket.on('playerCalled', function(data) {
@@ -66,6 +68,8 @@ socket.on('badLiar', function() {
   // The player tried to lie with a too low number
 });
 
+
+
 function endTurn() {
   const playcontrols = Array.from(
     document.getElementsByClassName('playControls')
@@ -77,6 +81,15 @@ function log(logString) {
   logTextArea.value += logString;
 }
 
+startButton.addEventListener('click', function() {
+  joinGame({name: nameField.value});
+  const startControls = Array.from(document.getElementsByClassName('startControls'));;
+  startControls.map(el => el.style.visbility = 'hidden');
+  
+  const playcontrols = Array.from(document.getElementsByClassName('playControls'));
+  playcontrols.map(el => el.style.visbility = 'visible');
+ });
+
 liftButton.addEventListener('click', function() {
   sendLift();
   endTurn();
@@ -86,7 +99,7 @@ rollButton.addEventListener('click', function() {
   getRoll();
 });
 
-riskButton.addEventListener('click', function() {
+riskItButton.addEventListener('click', function() {
   sendRisk();
   endTurn();
 });
@@ -96,6 +109,7 @@ lieButton.addEventListener('click', function() {
   const lie2 = Math.floor(lie2Field.value);
   if (lie1 < 7 && lie1 > 0 && lie2 < 7 && lie2 > 0) {
     sendLie(lieField.value);
+    endTurn();
   } else {
     logTextArea.value += 'The values for the dices must be from 1 to 6';
   }
