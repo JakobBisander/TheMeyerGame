@@ -1,6 +1,5 @@
-var socket = io('http://localhost:5000');
+const socket = io('http://localhost:5000');
 //Variables
-var socket = io();
 const logTextarea = document.getElementById('logTextarea');
 const liftButton = document.getElementById('liftButton');
 const rollButton = document.getElementById('rollButton');
@@ -41,7 +40,7 @@ socket.on('returnRoll', function(data) {
 });
 
 socket.on('playerJoined', function(data) {
-  logTextArea += data.name + ' joined the game';
+  log(data.name + ' joined the game');
   console.log(data);
   // Add data.name to log
 });
