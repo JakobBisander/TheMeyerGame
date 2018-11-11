@@ -10,7 +10,8 @@ const die2Field = document.getElementById('2ndDie');
 const lie1Field = document.getElementById('1stLie');
 const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
-const startButton = document.getElementById('startButton');
+const startButton = document.getElementById('startButton'); 
+const joinButton = document.getElementById('joinButton'); 
 const nameField = document.getElementById('nameField');
 const logTextarea = document.getElementById('logTextarea');
 
@@ -69,7 +70,6 @@ socket.on('badLiar', function() {
 });
 
 
-
 function endTurn() {
   const playcontrols = Array.from(
     document.getElementsByClassName('playControls')
@@ -81,19 +81,33 @@ function log(logString) {
   logTextArea.value += logString;
 }
 
-startButton.addEventListener('click', function() {
+joinButton.addEventListener('click', function() {
   joinGame({name: nameField.value});
   const startControls = Array.from(document.getElementsByClassName('startControls'));;
   startControls.map(el => el.style.visbility = 'hidden');
   
-  const playcontrols = Array.from(document.getElementsByClassName('playControls'));
-  playcontrols.map(el => el.style.visbility = 'visible');
+  
  });
+
+ 
+startButton.addEventListener('click', function() {
+ socket.emit('start');
+ const playcontrols = Array.from(document.getElementsByClassName('playControls'));
+  playcontrols.map(el => el.style.visbility = 'visible'); 
+})
 
 liftButton.addEventListener('click', function() {
   sendLift();
   endTurn();
 });
+
+joinButton.addEventListener('click', function() {
+  if ( nameField.value === ""){
+    alert("Name must be filled out");
+    return false;
+  }
+}
+
 
 rollButton.addEventListener('click', function() {
   getRoll();
