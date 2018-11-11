@@ -1,4 +1,3 @@
-const logTextarea = document.getElementById('logTextarea');
 var socket = io('http://localhost:5000');
 //Variables
 var socket = io();
@@ -13,6 +12,7 @@ const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
 const startButton = document.getElementById('startButton');
 const nameField = document.getElementById('nameField');
+const logTextarea = document.getElementById('logTextarea');
 
 socket.on('connect', () => {
   console.log('connected to server');
