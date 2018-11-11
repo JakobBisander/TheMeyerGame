@@ -103,7 +103,7 @@ joinButton.addEventListener('click', function() {
     alert("Name must be filled out");
     return false;
   }
-}
+});
 
 
 rollButton.addEventListener('click', function() {
