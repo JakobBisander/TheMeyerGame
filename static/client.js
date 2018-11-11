@@ -78,7 +78,7 @@ function endTurn() {
 }
 
 function log(logString) {
-  logTextArea.value += logString;
+logTextArea.value += logString + '\n';
 }
 
 joinButton.addEventListener('click', function() {
