@@ -37,7 +37,7 @@ module.exports = class Game {
     this.previousDice = this.playerLied ? this.liedDice : this.dice;
     this.playerLied = false;
     this.liedDice = '00';
-    this.dice = sortDices(this.Random(), this.Random());
+    this.dice = this.sortDices(this.Random(), this.Random());
     return this.dice;
   }
 

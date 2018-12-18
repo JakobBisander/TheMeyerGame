@@ -1,25 +1,25 @@
 // Dependencies
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
-const Player = require('./Player');
-const Game = require('./Game');
+import express = require('express');
+import http = require('http');
+import path = require('path');
+import socketIO = require('socket.io');
+import Player =require('../Player');
+import Game = require('../Game');
 var app = express();
-var server = http.Server(app);
+var server = new http.Server(app);
 var io = socketIO(server);
 app.set('port', 5000);
-app.use('/static', express.static(__dirname + '/static'));
+app.use('../static', express.static(__dirname + '../static'));
 // Routing
 app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname, 'index.html'));
+	response.sendFile(path.join(__dirname, '../index.html'));
 });
 // Starts the server.
 server.listen(5000, function() {
 	console.log('Starting server on port 5000');
 });
 
-let players = [];
+let players:Player[];
 let game;
 
 io.on('connection', function(socket) {
@@ -47,7 +47,7 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		if (!game) {
 			// If the game has not yet started, the disconnecting player should only be removed from the players array
-			const index = players.findIndex(player => player.socketId === socket.id);
+			let index = game.players.findIndex(player => player.socketId === socket.id);
 			players.splice(index, 1);
 		} else {
 			// If the game has started, the disconnecting player should be removed from the game instance
@@ -137,11 +137,11 @@ io.on('connection', function(socket) {
 	});
 
 	// Called whenever a player wishes to roll blindly and hope for a high enough roll
-	socket.on('risk', function() {
-		game.rollDice();
-		game.nextPlayer();
-		const nextPlayer = game.getCurrentPlayer();
+	// socket.on('risk', function() {
+	// 	game.rollDice();
+	// 	game.nextPlayer();
+	// 	const nextPlayer = game.getCurrentPlayer();
 
-		io.to(nextPlayer.socketId).emit('yourTurn', data);
-	});
+	// 	io.to(nextPlayer.socketId).emit('yourTurn', data);
+	// });
 });
