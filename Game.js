@@ -54,15 +54,15 @@ module.exports = class Game {
   }
 
   isHigher(dice) {
-    return this.rules.indexOf(dice) < this.rules.indexOf(this.previousDice);
+    return this.rules.indexOf(dice) <= this.rules.indexOf(this.previousDice);
   }
 
   lift() {
-    if (this.playerLied) {
-      let lastPlayer =
+    let lastPlayer =
         this.currentPlayer === 0
           ? this.players.length - 1
           : this.currentPlayer - 1;
+    if (this.playerLied) {
       this.players[lastPlayer].decrementScore();
       return this.players[lastPlayer];
     }

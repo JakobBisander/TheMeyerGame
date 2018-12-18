@@ -13,6 +13,7 @@ const logTextArea = document.getElementById('log');
 const startButton = document.getElementById('startButton');
 const joinButton = document.getElementById('joinButton');
 const nameField = document.getElementById('nameField');
+const scoreBoard = document.getElementById('scoreBoard');
 const playControls = Array.from(document.getElementsByClassName('playControls'));
 
 disablePlayControls();
@@ -50,9 +51,7 @@ socket.on('playerJoined', function(data) {
 });
 socket.on('gameStarting', () => {
 	console.log('The game is starting');
-
-	const playcontrols = Array.from(document.getElementsByClassName('playControls'));
-	playcontrols.map(el => {
+	playControls.map(el => {
 		el.hidden = false;
 	});
 });
@@ -64,7 +63,6 @@ socket.on('yourTurn', function(data) {
 });
 
 socket.on('newRound', function(data) {
-	const scoreBoard = document.getElementById('scoreBoard');
 	scoreBoard.value = 'The score is \n';
 	for (const player of data.players) {
 		scoreBoard.value += `${player.name} ${player.score}\n`;
@@ -98,7 +96,7 @@ function disablePlayControls() {
 function enablePlayControls() {
 	playControls.map(el => (el.disabled = false));
 }
-
+//Event listeners
 callButton.addEventListener('click', () => {
 	const die1 = die1Field.value;
 	const die2 = die2Field.value;
