@@ -107,7 +107,8 @@ module.exports = class Game {
     if (this.currentPlayer > this.players.length - 1) {
       this.currentPlayer = 0;
     }
-    console.log(this.players);
+    console.log("nextPlayer method");
+    console.log({ "nextplayer": this.currentPlayer });
     if (this.players[this.currentPlayer].lost) this.nextPlayer();
   }
 
@@ -126,7 +127,6 @@ module.exports = class Game {
   }
   getGameState() {
     let activePlayers = this.players.filter(player => player.lost == false);
-    console.log({ activePlayers: activePlayers });
-    return { players: activePlayers };
+    return activePlayers;
   }
 };

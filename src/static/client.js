@@ -71,7 +71,7 @@ socket.on('gameEnded', function (data) {
 
 socket.on('newRound', function (data) {
 	scoreBoard.value = 'The score is \n';
-	for (const player of data.players) {
+	for (const player of data) {
 		scoreBoard.value += `${player.name} ${player.score}\n`;
 	}
 	// A new round is starting, and someone just lost.
@@ -91,7 +91,6 @@ socket.on('badLiar', function () {
 });
 socket.on('gameReady', function () {
 	log('Game ready');
-	console.log(startButton);
 	startButton.hidden = false;
 });
 

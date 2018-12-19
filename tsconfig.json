@@ -9,7 +9,7 @@
         "outDir": "./build/"
     },
     "include": [
-        "./src/**/*", "src/Game.js", "src/Player.js"
+        "./src/**/*"
     ],
     "exclude": [
         "./build/**/*"

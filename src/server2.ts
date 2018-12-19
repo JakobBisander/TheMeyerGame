@@ -91,12 +91,14 @@ io.on('connection', function (socket) {
 
 	// Called whenever a player decides to lift on the former player
 	socket.on('lift', function () {
-		const gameState = game.endRound();
+		let gameState: Player[];
+		gameState = game.endRound();
 
-		const nextPlayer = game.getCurrentPlayer();
-		if (gameState.players.length == 1) {
-			io.emit("gameEnded", gameState.players[0])
+
+		if (gameState.length === 1) {
+			io.emit("gameEnded", gameState[0]);
 		} else {
+			let nextPlayer = game.getCurrentPlayer();
 			io.emit('newRound', gameState);
 			io.to(nextPlayer.socketId).emit('yourTurn');
 		}
@@ -105,7 +107,6 @@ io.on('connection', function (socket) {
 	// Called whenever a player makes a new call
 	// Game already knows from the previous roll, what was actually rolled
 	socket.on('call', function (data) {
-		console.log(data);
 		let callingPlayer: Player = game.players.find((player: Player) => {
 			return player.socketId === socket.id;
 		});
@@ -123,8 +124,6 @@ io.on('connection', function (socket) {
 		};
 
 		io.emit('playerCalled', newData);
-		console.log('Player called', newData);
-
 		io.to(nextPlayer.socketId).emit('yourTurn');
 	});
 
@@ -135,8 +134,6 @@ io.on('connection', function (socket) {
 		});
 
 		let idiot: boolean = game.setLied(data);//Checking for whether the lied value is higher than the previous dice.
-		console.log(idiot, data);
-
 		if (!idiot) {
 			io.to(callingPlayer.socketId).emit('badLiar');
 		} else {
