@@ -3,29 +3,31 @@ import express = require('express');
 import http = require('http');
 import path = require('path');
 import socketIO = require('socket.io');
-import Player =require('../Player');
-import Game = require('../Game');
-var app = express();
-var server = new http.Server(app);
-var io = socketIO(server);
+import Player = require("./Player");
+import Game = require('./Game');
+import { O_NOFOLLOW } from 'constants';
+const app = express();
+const server = new http.Server(app);
+const io = socketIO(server);
 app.set('port', 5000);
-app.use('../static', express.static(__dirname + '../static'));
+app.use('/static', express.static(__dirname + '/static'));
 // Routing
-app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname, '../index.html'));
+app.get('/', function (request, response) {
+	response.sendFile(path.join(__dirname, '/index.html'));
 });
 // Starts the server.
-server.listen(5000, function() {
-	console.log('Starting server on port 5000');
+server.listen(5000, function () {
+	console.log('Starting server on port 5000 at ' + new Date().toLocaleString());
 });
 
-let players:Player[];
-let game;
+let players: Player[] = [];
+let game: Game;
 
-io.on('connection', function(socket) {
-	socket.on('addPlayer', function(data) {
+io.on('connection', function (socket) {
+	socket.on('addPlayer', function (data) {
 		const player = new Player(data.name, socket.id);
 		console.log(player);
+
 
 		players.push(player);
 		io.emit('playerJoined', player);
@@ -35,8 +37,8 @@ io.on('connection', function(socket) {
 	});
 
 	// Called whenever a player willingly leaves
-	socket.on('leave', function() {
-		const leavingPlayer = game.players.find(player => {
+	socket.on('leave', function () {
+		let leavingPlayer = game.players.find((player: Player) => {
 			return player.socketId === socket.id;
 		});
 
@@ -44,23 +46,34 @@ io.on('connection', function(socket) {
 	});
 
 	// Called whenever a player loses connection to the server
-	socket.on('disconnect', function() {
-		if (!game) {
+	socket.on('disconnect', function () {
+		if (game === undefined) {
 			// If the game has not yet started, the disconnecting player should only be removed from the players array
-			let index = game.players.findIndex(player => player.socketId === socket.id);
-			players.splice(index, 1);
+			//let index = game.players.findIndex((player:Player) => player.socketId === socket.id);
+			// for(let index=0;index<players.length;index++){
+			// 	if(players[index].socketId===socket.id){
+			// 		players.splice(index, 1);
+			// 	}
+			// }
+			if (players.length !== 0) {
+				for (let index = 0; index < players.length; index++) {
+					if (players[index].socketId === socket.id) {
+						players.splice(index, 1);
+					}
+				}
+			}
+			socket.disconnect(true)
 		} else {
 			// If the game has started, the disconnecting player should be removed from the game instance
-			const disconnectingPlayer = game.players.find(player => {
+			const disconnectingPlayer = game.players.find((player: Player) => {
 				return player.socketId === socket.id;
 			});
-
 			game.removePlayer(disconnectingPlayer);
 		}
 	});
 
 	// Called whenever a player decides to start the game, with the currently connected players
-	socket.on('start', function() {
+	socket.on('start', function () {
 		game = new Game(players);
 
 		const nextPlayer = game.getCurrentPlayer();
@@ -68,37 +81,41 @@ io.on('connection', function(socket) {
 		io.emit('newRound', game.getGameState());
 		io.emit('gameStarting');
 		// io.to(nextPlayer.socketId).emit('yourTurn');
-		socket.emit('yourTurn');
+		io.to(nextPlayer.socketId).emit('yourTurn');
 	});
 
 	// Called whenever a player requests a new roll from the server
-	socket.on('roll', function() {
+	socket.on('roll', function () {
 		io.to(socket.id).emit('returnRoll', game.rollDice()); // Format is '56'
 	});
 
 	// Called whenever a player decides to lift on the former player
-	socket.on('lift', function() {
+	socket.on('lift', function () {
 		const gameState = game.endRound();
 
 		const nextPlayer = game.getCurrentPlayer();
-
-		io.emit('newRound', gameState);
-		io.to(nextPlayer.socketId).emit('yourTurn');
+		if (gameState.players.length == 1) {
+			io.emit("gameEnded", gameState.players[0])
+		} else {
+			io.emit('newRound', gameState);
+			io.to(nextPlayer.socketId).emit('yourTurn');
+		}
 	});
 
 	// Called whenever a player makes a new call
 	// Game already knows from the previous roll, what was actually rolled
-	socket.on('call', function(data) {
-		const callingPlayer = game.players.find(player => {
+	socket.on('call', function (data) {
+		console.log(data);
+		let callingPlayer: Player = game.players.find((player: Player) => {
 			return player.socketId === socket.id;
 		});
 
-		if(!game.isHigher(game.dice)){
+		if (!game.isHigher(game.dice)) {
 			io.to(callingPlayer.socketId).emit('invalidCall');
 			return;
 		}
 		game.nextPlayer();
-		const nextPlayer = game.getCurrentPlayer();
+		let nextPlayer: Player = game.getCurrentPlayer();
 
 		const newData = {
 			lastRoll: data,
@@ -112,12 +129,12 @@ io.on('connection', function(socket) {
 	});
 
 	// Called whenever a player calls a lie
-	socket.on('lie', function(data) {
-		const callingPlayer = game.players.find(player => {
+	socket.on('lie', function (data) {
+		let callingPlayer: Player = game.players.find((player: Player) => {
 			return player.socketId === socket.id;
 		});
 
-		const idiot = game.setLied(data);
+		let idiot: boolean = game.setLied(data);//Checking for whether the lied value is higher than the previous dice.
 		console.log(idiot, data);
 
 		if (!idiot) {

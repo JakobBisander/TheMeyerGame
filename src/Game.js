@@ -4,9 +4,9 @@ module.exports = class Game {
     this.players = players;
     this.currentPlayer = 0;
     this.score = [];
-    this.dice = '00';
-    this.previousDice = '00';
-    this.liedDice = '00';
+    this.dice = '32';
+    this.previousDice = '32';
+    this.liedDice = '32';
     this.playerLied = false;
     this.rules = [
       '12',
@@ -59,9 +59,9 @@ module.exports = class Game {
 
   lift() {
     let lastPlayer =
-        this.currentPlayer === 0
-          ? this.players.length - 1
-          : this.currentPlayer - 1;
+      this.currentPlayer === 0
+        ? this.players.length - 1
+        : this.currentPlayer - 1;
     if (this.playerLied) {
       this.players[lastPlayer].decrementScore();
       return this.players[lastPlayer];
@@ -74,8 +74,14 @@ module.exports = class Game {
     const lastRoundLoser = this.lift();
     const lostPlayers = this.checkScore();
     this.nextPlayer();
-
-    return this.getGameState();
+    this.resetForNextRound();
+    return this.getGameState();//Returns players that are still alive.
+  }
+  resetForNextRound() {
+    this.previousDice = '32';
+    this.liedDice = '32';
+    this.dice = '32';
+    this.playerLied = false;
   }
 
   checkScore() {
@@ -93,8 +99,7 @@ module.exports = class Game {
       _player => _player.socketId === player.socketId
     );
     this.players[toRmv].lost = true;
-    this.currentPlayer =
-      this.currentPlayer === 0 ? players.length - 1 : this.currentPlayer - 1;
+    this.nextPlayer();
   }
 
   nextPlayer() {
@@ -102,6 +107,7 @@ module.exports = class Game {
     if (this.currentPlayer > this.players.length - 1) {
       this.currentPlayer = 0;
     }
+    console.log(this.players);
     if (this.players[this.currentPlayer].lost) this.nextPlayer();
   }
 
@@ -119,6 +125,8 @@ module.exports = class Game {
     return true;
   }
   getGameState() {
-		return { players: this.players };
-	}
+    let activePlayers = this.players.filter(player => player.lost == false);
+    console.log({ activePlayers: activePlayers });
+    return { players: activePlayers };
+  }
 };

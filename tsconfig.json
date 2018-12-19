@@ -1,0 +1,17 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "allowJs": true,
+        "outDir": "./build/"
+    },
+    "include": [
+        "./src/**/*", "src/Game.js", "src/Player.js"
+    ],
+    "exclude": [
+        "./build/**/*"
+    ]
+}
