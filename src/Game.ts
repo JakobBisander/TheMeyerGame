@@ -120,12 +120,13 @@ class Game {
     return this.players[this.currentPlayer];
   }
 
-  setLied(liedDice: string) {
-    if (!this.isHigher(liedDice)) {
+  setLied(liedDice: number[]) {
+    let lie = this.sortDices(liedDice[0], liedDice[1]);
+    if (!this.isHigher(lie)) {
       return false;
     }
     this.playerLied = true;
-    this.liedDice = liedDice;
+    this.liedDice = lie;
     this.nextPlayer();
     return true;
   }

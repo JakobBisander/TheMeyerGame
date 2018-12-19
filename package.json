@@ -4,8 +4,8 @@
 	"description": "A distributed multiplayer dice game",
 	"main": "index.js",
 	"scripts": {
-		"compile":"tsc && ts-node ./build/server2.js",
-		"dev": "tsc && ./node_modules/.bin/nodemon -e ts --exec \"npm run compile\"",
+		"compile": "tsc && ts-node ./build/server.js",
+		"dev": "./node_modules/.bin/nodemon --watch src --exec \"npm run compile\"",
 		"test": "test"
 	},
 	"keywords": [

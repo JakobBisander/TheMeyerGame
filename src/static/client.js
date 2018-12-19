@@ -4,7 +4,6 @@ const logTextarea = document.getElementById('logTextarea');
 const liftButton = document.getElementById('liftButton');
 const rollButton = document.getElementById('rollButton');
 const callButton = document.getElementById('callButton');
-const lieButton = document.getElementById('lieButton');
 const die1Field = document.getElementById('1stDie');
 const die2Field = document.getElementById('2ndDie');
 const lie1Field = document.getElementById('1stLie');
@@ -88,6 +87,10 @@ socket.on('invalidCall', function (data) {
 
 socket.on('badLiar', function () {
 	// The player tried to lie with a too low number
+	alert("You have lied with a value that is lower than the previous call.\nPlease try again.");
+	lie1Field.disabled = false;
+	lie2Field.disabled = false;
+	lieButton.disabled = false;
 });
 socket.on('gameReady', function () {
 	log('Game ready');

@@ -135,9 +135,7 @@ io.on('connection', function (socket) {
 			};
 
 			io.emit('playerCalled', newData);
-			//game.nextPlayer();
 			const nextPlayer = game.getCurrentPlayer();
-
 			io.to(nextPlayer.socketId).emit('yourTurn');
 		}
 	});
