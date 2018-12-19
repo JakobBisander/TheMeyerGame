@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"compile": "tsc && ts-node ./build/server.js",
-		"dev": "./node_modules/.bin/nodemon --watch src --exec \"npm run compile\"",
+		"dev": "./node_modules/.bin/nodemon --watch src -e ts,js --exec \"npm run compile\"",
 		"test": "test"
 	},
 	"keywords": [
