@@ -1,9 +1,15 @@
-module.exports = class Game {
-  constructor(players) {
-    this.log = [];
+import Player = require("./Player");
+class Game {
+  players: Player[] = [];//cant be private because it is used by server2.ts
+  private currentPlayer: number;
+  dice: string;//cant be private because it is used by server2.ts
+  private previousDice: string;
+  private liedDice: string;
+  private playerLied: boolean;
+  private rules: string[];
+  constructor(players: Player[]) {
     this.players = players;
     this.currentPlayer = 0;
-    this.score = [];
     this.dice = '32';
     this.previousDice = '32';
     this.liedDice = '32';
@@ -41,7 +47,7 @@ module.exports = class Game {
     return this.dice;
   }
 
-  sortDices(d1, d2) {
+  sortDices(d1: number, d2: number) {
     if (d1 === d2) return '' + d1 + d2;
     if ((d1 === 2 || d1 === 3) && d2 === 1) return '' + d2 + d1;
     if (d1 === 1 && (d2 === 2 || d2 === 3)) return '' + d1 + d2;
@@ -53,7 +59,7 @@ module.exports = class Game {
     return Math.floor(Math.random() * 6) + 1;
   }
 
-  isHigher(dice) {
+  isHigher(dice: string) {
     return this.rules.indexOf(dice) <= this.rules.indexOf(this.previousDice);
   }
 
@@ -94,7 +100,7 @@ module.exports = class Game {
     return lostPlayers;
   }
 
-  removePlayer(player) {
+  removePlayer(player: Player) {
     const toRmv = this.players.findIndex(
       _player => _player.socketId === player.socketId
     );
@@ -114,7 +120,7 @@ module.exports = class Game {
     return this.players[this.currentPlayer];
   }
 
-  setLied(liedDice) {
+  setLied(liedDice: string) {
     if (!this.isHigher(liedDice)) {
       return false;
     }
@@ -128,3 +134,4 @@ module.exports = class Game {
     return activePlayers;
   }
 };
+export = Game;

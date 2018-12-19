@@ -5,7 +5,6 @@ import path = require('path');
 import socketIO = require('socket.io');
 import Player = require("./Player");
 import Game = require('./Game');
-import { O_NOFOLLOW } from 'constants';
 const app = express();
 const server = new http.Server(app);
 const io = socketIO(server);
@@ -49,18 +48,11 @@ io.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		if (game === undefined) {
 			// If the game has not yet started, the disconnecting player should only be removed from the players array
-			//let index = game.players.findIndex((player:Player) => player.socketId === socket.id);
-			// for(let index=0;index<players.length;index++){
-			// 	if(players[index].socketId===socket.id){
-			// 		players.splice(index, 1);
-			// 	}
-			// }
 			if (players.length !== 0) {
-				for (let index = 0; index < players.length; index++) {
-					if (players[index].socketId === socket.id) {
-						players.splice(index, 1);
-					}
-				}
+				let index: number = game.players.findIndex((player: Player) => {
+					return player.socketId === socket.id;
+				});
+				players.splice(index, 1);
 			}
 			socket.disconnect(true)
 		} else {
