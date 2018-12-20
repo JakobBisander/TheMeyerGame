@@ -1,18 +1,10 @@
 const socket = io('http://localhost:5000');
 //Variables
 const logTextarea = document.getElementById('logTextarea');
-const liftButton = document.getElementById('liftButton');
-const rollButton = document.getElementById('rollButton');
-const callButton = document.getElementById('callButton');
-const lieButton = document.getElementById('lieButton');
 const die1Field = document.getElementById('1stDie');
 const die2Field = document.getElementById('2ndDie');
-const lie1Field = document.getElementById('1stLie');
-const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
 const startButton = document.getElementById('startButton');
-const joinButton = document.getElementById('joinButton');
-const nameField = document.getElementById('nameField');
 const playControls = Array.from(document.getElementsByClassName('playControls'));
 
 disablePlayControls();
@@ -24,7 +16,6 @@ socket.on('connect', () => {
 //  Listeners
 socket.on('playerCalled', function(data) {
 	console.log({ data });
-
 	const { lastRoll, playerName } = data;
 	log(playerName + ' says ' + lastRoll[0] + ' and ' + lastRoll[1]);
 	// Emit that a player made a given call
@@ -50,16 +41,13 @@ socket.on('playerJoined', function(data) {
 });
 socket.on('gameStarting', () => {
 	console.log('The game is starting');
-
-	const playcontrols = Array.from(document.getElementsByClassName('playControls'));
-	playcontrols.map(el => {
+	playControls.map(el => {
 		el.hidden = false;
 	});
 });
 
 socket.on('yourTurn', function(data) {
 	log('Your turn');
-
 	enablePlayControls();
 });
 
@@ -83,6 +71,7 @@ socket.on('gameReady', function() {
 	startButton.hidden = false;
 });
 
+
 function endTurn() {
 	playControls.map(el => el.setAttribute('disabled', true));
 }
@@ -96,65 +85,55 @@ function disablePlayControls() {
 }
 
 function enablePlayControls() {
-	playControls.map(el => (el.disabled = false));
+    playControls.map(el => (el.disabled = false));
+    console.log("called enable")
 }
 
-callButton.addEventListener('click', () => {
-	const die1 = die1Field.value;
-	const die2 = die2Field.value;
-	disablePlayControls();
-
-	socket.emit('call', [die1, die2]);
-});
 
 $(document).ready(function() {
-    $("#joinButton").click(function () {
-        socket.emit('addPlayer', {name: $("#nameField").val()});
-		$(".startControls").hide();
-	})
-	
-	$("#startButton").click (function (){
-		socket.emit('start');
-		$(".playControls").style.visibility == 'visible';
-	})
-	
-	/*$("#rollButton").click(function() {
+    $("#rollButton").click(function() {
         $("#rollButton").prop("disabled", true);
         $("liftButton").prop("disabled", true);
         socket.emit('roll');
-    });/*/
+    });
+
+    $("#callButton").click(function() {
+        const die1 = $("#1stDie").val();
+        const die2 = $("#2ndDie").val();
+        disablePlayControls();
+        socket.emit('call', [die1, die2]);
+    })
+
+    $("#joinButton").click(function () {
+        socket.emit('addPlayer', {name: $("#nameField").val()});
+        const startControls = Array.from($("#startControls"));
+        startControls.map(el => (el.style.visibility = "hidden"));
+    })
+
+    $("#startButton").click (function (){
+        socket.emit('start');
+        playControls.map(el => (el.style.visbility = 'visible'));
+    })
+
+    $("#liftButton").click(function () {
+        disablePlayControls();
+        socket.emit('lift');
+        endTurn();
+    })
+
+    $("#lieButton").click(function(){
+        const lie1 = Math.floor($("#1stLie").val());
+        const lie2 = Math.floor($("#2ndLie").val());
+        if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
+            socket.emit('lie', [lie1, lie2]);
+            console.log("emit1")
+            endTurn();
+        } else {
+            log('The values for the dice must be from 1 to 6');
+        }
+    })
 });
 
-rollButton.addEventListener('click', function() {
-	rollButton.disabled = true;
-	liftButton.disabled = true;
-	getRoll();
-});
-
-
-liftButton.addEventListener('click', function() {
-	disablePlayControls();
-
-	sendLift();
-	endTurn();
-});
-
-
-
-
-
-
-
-lieButton.addEventListener('click', function() {
-	const lie1 = Math.floor(lie1Field.value);
-	const lie2 = Math.floor(lie2Field.value);
-	if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
-		sendLie(lie1, lie2);
-		endTurn();
-	} else {
-		log('The values for the dices must be from 1 to 6');
-	}
-});
 
 // Emits
 function joinGame(player) {
@@ -165,10 +144,6 @@ function sendStart() {
 	socket.emit('start');
 }
 
-function getRoll() {
-	socket.emit('roll');
-}
-
 function sendLift() {
 	socket.emit('lift');
 }
@@ -177,9 +152,6 @@ function sendCall(die1, die2) {
 	socket.emit('call', [die1, die2]);
 }
 
-function sendLie(die1, die2) {
-	socket.emit('lie', [die1, die2]);
-}
 
 function sendRisk() {
 	socket.emit('risk');
