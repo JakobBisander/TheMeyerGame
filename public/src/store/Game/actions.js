@@ -20,6 +20,9 @@ export default socket => {
     setPlayers: ({ commit }, players) => {
       commit('SetPlayers', players)
     },
+    lie: ({ commit }, lie) => {
+      socket.emit('lie', lie)
+    },
     roll: _ => socket.emit(plays.ROLL),
     lift: _ => socket.emit(plays.LIFT),
     call: (context, dice) => socket.emit(plays.CALL, dice),
