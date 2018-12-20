@@ -34,10 +34,10 @@ module.exports = class Game {
 	}
 
 	rollDice() {
+		this.previousDice = this.playerLied ? this.liedDice : this.dice;
 		this.playerLied = false;
 		this.liedDice = '00';
 		this.dice = this.sortDices(this.Random(), this.Random());
-		this.previousDice = this.playerLied ? this.liedDice : this.dice;
 
 		return this.dice;
 	}
