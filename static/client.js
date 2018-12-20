@@ -1,17 +1,11 @@
 const socket = io('http://localhost:5000');
 //Variables
 const logTextarea = document.getElementById('logTextarea');
-const liftButton = document.getElementById('liftButton');
-const rollButton = document.getElementById('rollButton');
-const callButton = document.getElementById('callButton');
-const lieButton = document.getElementById('lieButton');
 const die1Field = document.getElementById('1stDie');
 const die2Field = document.getElementById('2ndDie');
 const lie1Field = document.getElementById('1stLie');
 const lie2Field = document.getElementById('2ndLie');
 const logTextArea = document.getElementById('log');
-const startButton = document.getElementById('startButton');
-const joinButton = document.getElementById('joinButton');
 const nameField = document.getElementById('nameField');
 const playControls = Array.from(document.getElementsByClassName('playControls'));
 
@@ -80,7 +74,7 @@ socket.on('badLiar', function() {
 socket.on('gameReady', function() {
 	log('Game ready');
 	console.log(startButton);
-	startButton.hidden = false;
+	$("#startButton").show();
 });
 
 function endTurn() {
@@ -99,14 +93,6 @@ function enablePlayControls() {
 	playControls.map(el => (el.disabled = false));
 }
 
-callButton.addEventListener('click', () => {
-	const die1 = die1Field.value;
-	const die2 = die2Field.value;
-	disablePlayControls();
-
-	socket.emit('call', [die1, die2]);
-});
-
 $(document).ready(function() {
     $("#joinButton").click(function () {
         socket.emit('addPlayer', {name: $("#nameField").val()});
@@ -118,42 +104,37 @@ $(document).ready(function() {
 		$(".playControls").style.visibility == 'visible';
 	})
 	
-	/*$("#rollButton").click(function() {
+	$("#rollButton").click(function() {
         $("#rollButton").prop("disabled", true);
         $("liftButton").prop("disabled", true);
         socket.emit('roll');
-    });/*/
-});
+	});
 
-rollButton.addEventListener('click', function() {
-	rollButton.disabled = true;
-	liftButton.disabled = true;
-	getRoll();
-});
-
-
-liftButton.addEventListener('click', function() {
-	disablePlayControls();
-
-	sendLift();
-	endTurn();
-});
-
-
-
-
-
-
-
-lieButton.addEventListener('click', function() {
-	const lie1 = Math.floor(lie1Field.value);
-	const lie2 = Math.floor(lie2Field.value);
-	if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
-		sendLie(lie1, lie2);
-		endTurn();
-	} else {
-		log('The values for the dices must be from 1 to 6');
-	}
+	$("#callButton").click(function() {
+        const die1 = $("#1stDie").val();
+        const die2 = $("#2ndDie").val();
+        disablePlayControls();
+        socket.emit('call', [die1, die2]);
+	})
+	
+	$("#liftButton").click(function () {
+        disablePlayControls();
+        socket.emit('lift');
+        endTurn();
+	})
+	
+	$("#lieButton").click(function(){
+		const lie1 = Math.floor($("#1stLie").val());
+		console.log("lie1 " + lie1)
+		const lie2 = Math.floor($("#2ndLie").val());
+		console.log("lie2 " + lie2)
+        if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
+            socket.emit('lie', [lie1, lie2]);
+            endTurn();
+        } else {
+            log('The values for the dice must be from 1 to 6');
+        }
+    })
 });
 
 // Emits
