@@ -37,7 +37,7 @@ io.on('connection', function (socket) {
 
 	// Called whenever a player willingly leaves
 	socket.on('leave', function () {
-		let leavingPlayer = game.players.find((player: Player) => {
+		let leavingPlayer = game.players.find(player => {
 			return player.socketId === socket.id;
 		});
 
@@ -49,7 +49,7 @@ io.on('connection', function (socket) {
 		if (game === undefined) {
 			// If the game has not yet started, the disconnecting player should only be removed from the players array
 			if (players.length !== 0) {
-				let index: number = game.players.findIndex((player: Player) => {
+				let index = game.players.findIndex(player => {
 					return player.socketId === socket.id;
 				});
 				players.splice(index, 1);
@@ -57,7 +57,7 @@ io.on('connection', function (socket) {
 			socket.disconnect(true)
 		} else {
 			// If the game has started, the disconnecting player should be removed from the game instance
-			const disconnectingPlayer = game.players.find((player: Player) => {
+			const disconnectingPlayer = game.players.find(player => {
 				return player.socketId === socket.id;
 			});
 			game.removePlayer(disconnectingPlayer);
@@ -99,7 +99,7 @@ io.on('connection', function (socket) {
 	// Called whenever a player makes a new call
 	// Game already knows from the previous roll, what was actually rolled
 	socket.on('call', function (data) {
-		let callingPlayer: Player = game.players.find((player: Player) => {
+		let callingPlayer: Player = game.players.find(player => {
 			return player.socketId === socket.id;
 		});
 
@@ -121,7 +121,7 @@ io.on('connection', function (socket) {
 
 	// Called whenever a player calls a lie
 	socket.on('lie', function (data) {
-		let callingPlayer: Player = game.players.find((player: Player) => {
+		let callingPlayer: Player = game.players.find(player => {
 			return player.socketId === socket.id;
 		});
 

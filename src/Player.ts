@@ -1,5 +1,4 @@
 class Player {
-  //wont do getters and setters for this.
   name: string;
   socketId: string;
   score: number;
@@ -10,7 +9,6 @@ class Player {
     this.score = 6;
     this.lost = false;
   }
-
   decrementScore() {
     this.score--;
   }
