@@ -125,9 +125,7 @@ $(document).ready(function() {
 	
 	$("#lieButton").click(function(){
 		const lie1 = Math.floor($("#1stLie").val());
-		console.log("lie1 " + lie1)
 		const lie2 = Math.floor($("#2ndLie").val());
-		console.log("lie2 " + lie2)
         if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
             socket.emit('lie', [lie1, lie2]);
             endTurn();
