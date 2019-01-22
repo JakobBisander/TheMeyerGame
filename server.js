@@ -67,8 +67,7 @@ io.on('connection', function(socket) {
 
 		io.emit('newRound', game.getGameState());
 		io.emit('gameStarting');
-		// io.to(nextPlayer.socketId).emit('yourTurn');
-		socket.emit('yourTurn');
+		io.to(nextPlayer.socketId).emit('yourTurn');
 	});
 
 	// Called whenever a player requests a new roll from the server
@@ -92,7 +91,7 @@ io.on('connection', function(socket) {
 		const callingPlayer = game.players.find(player => {
 			return player.socketId === socket.id;
 		});
-		game.nextPlayer();
+		if (game.changePlayer(data)){
 		const nextPlayer = game.getCurrentPlayer();
 
 		const newData = {
@@ -104,9 +103,15 @@ io.on('connection', function(socket) {
 		console.log('Player called', newData);
 
 		io.to(nextPlayer.socketId).emit('yourTurn');
+	}
+	else{
+		io.to(callingPlayer.socketId).emit('badCall')
+	}
+
 	});
 
 	// Called whenever a player calls a lie
+	// Data is array of 1st and 2ind die in the lie
 	socket.on('lie', function(data) {
 		const callingPlayer = game.players.find(player => {
 			return player.socketId === socket.id;
@@ -125,7 +130,7 @@ io.on('connection', function(socket) {
 			};
 
 			io.emit('playerCalled', newData);
-			//game.nextPlayer();
+			//game.nextPlayer(); Called i setLied()
 			const nextPlayer = game.getCurrentPlayer();
 
 			io.to(nextPlayer.socketId).emit('yourTurn');

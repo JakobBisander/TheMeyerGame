@@ -29,7 +29,8 @@ module.exports = class Game {
 			'43',
 			'42',
 			'41',
-			'32'
+			'32',
+			'00'
 		];
 	}
 
@@ -37,8 +38,8 @@ module.exports = class Game {
 		this.previousDice = this.playerLied ? this.liedDice : this.dice;
 		this.playerLied = false;
 		this.liedDice = '00';
+		console.log('previodsaklbv' + this.previousDice)
 		this.dice = this.sortDices(this.Random(), this.Random());
-
 		return this.dice;
 	}
 
@@ -49,7 +50,9 @@ module.exports = class Game {
 		if ((d1 === 2 || d1 === 3) && d2 === 1) return '' + d2 + d1;
 		if (d1 === 1 && (d2 === 2 || d2 === 3)) return '' + d1 + d2;
 		if (d2 > d1) return '' + d2 + d1;
+		console.log('sorted: '+ d1 + d2);
 		return '' + d1 + d2;
+		
 	}
 
 	Random() {
@@ -79,8 +82,10 @@ module.exports = class Game {
 		const lastRoundLoser = this.lift();
 		const lostPlayers = this.checkScore();
 		this.nextPlayer();
-
+		this.dice = '00';
+		this.liedDice = '00';
 		return this.getGameState();
+		
 	}
 
 	checkScore() {
@@ -99,13 +104,26 @@ module.exports = class Game {
 		this.currentPlayer = this.currentPlayer === 0 ? this.players.length - 1 : this.currentPlayer - 1;
 	}
 
-	nextPlayer() {
-		this.currentPlayer++;
-		if (this.currentPlayer > this.players.length - 1) {
-			this.currentPlayer = 0;
+	changePlayer(dice){	
+		const sorted = this.sortDices(dice[0], dice[1])
+		if (this.isHigher(sorted)){
+			this.nextPlayer();
+			return true;
 		}
-		if (this.players[this.currentPlayer].lost) this.nextPlayer();
+		else{
+			return false;
+		}
 	}
+	
+	nextPlayer() {
+			this.currentPlayer++;
+			if (this.currentPlayer > this.players.length - 1) {
+				this.currentPlayer = 0;
+			}
+			if (this.players[this.currentPlayer].lost) this.nextPlayer();
+			return true;
+		}
+
 
 	getCurrentPlayer() {
 		return this.players[this.currentPlayer];

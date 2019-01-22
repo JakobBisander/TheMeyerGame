@@ -25,12 +25,11 @@
   <h1>Welcome to distributed Meyer!</h1>
 
   <body>
-      <div>
+      <div id = "startControls">
           Enter name:
-          <input id="nameField" class="startControls" type="text" value="" />
-          <button id="joinButton" class="startControls" type="button">Join Game</button>
-          <button id="startButton" type="button" hidden>Start Game</button>
-
+          <input id="nameField" class="joinControls" type="text" value="" />
+          <button id="joinButton" class="joinControls" type="button">Join Game</button>
+          <button id="startButton"  type="button" hidden>Start Game</button>
         </div>
 
     <div>
@@ -51,16 +50,16 @@
       <div id="lie" >
         Lie:
         <input
-        hidden
+          hidden
           type="number"
           class="playControls"
           min="1"
           max="6"
-          id="1stLie"
+          id = "1stLie"
           value=""
         />
         <input
-        hidden
+          hidden
           type="number"
           min="1"
           max="6"
@@ -75,19 +74,14 @@
     </div>
     <div class="flex-container">
       <div>
-        1st die: <input hidden id="1stDie" class="playControls" type="text" value="" />
+        1st die: <input hidden disabled id="1stDie" type="text" value="" />
       </div>
       <div>
-        2nd die: <input hidden id="2ndDie" class="playControls" type="text" value="" />
+        2nd die: <input hidden disabled id="2ndDie"  type="text" value="" />
       </div>
     </div>
 
     <div class="flex-container">
-      <!-- <div>
-        <button hidden id="riskItButton" class="playControls" type="button">
-          Risk it!
-        </button>
-      </div> -->
       <div>
         <button hidden id="rollButton" class="playControls" type="button">Roll</button>
       </div >

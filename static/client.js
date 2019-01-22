@@ -9,12 +9,12 @@ const logTextArea = document.getElementById('log');
 const nameField = document.getElementById('nameField');
 const playControls = Array.from(document.getElementsByClassName('playControls'));
 
-disablePlayControls();
+
 
 socket.on('connect', () => {
 	console.log('connected to server');
-	//socket.emit('addPlayer', { name: 'Simon FizzKal Sinding' + Date.now() });
 });
+
 //  Listeners
 socket.on('playerCalled', function(data) {
 	console.log({ data });
@@ -45,16 +45,20 @@ socket.on('playerJoined', function(data) {
 socket.on('gameStarting', () => {
 	console.log('The game is starting');
 
-	const playcontrols = Array.from(document.getElementsByClassName('playControls'));
-	playcontrols.map(el => {
+	playControls.map(el => {
 		el.hidden = false;
 	});
+	$('#1stDie').show();
+	$('#2ndDie').show();
+	disablePlayControls();
+	$('#startControls').hide();
 });
 
 socket.on('yourTurn', function(data) {
 	log('Your turn');
-
 	enablePlayControls();
+	$('#1stDie').val('');
+	$('#2ndDie').val('');
 });
 
 socket.on('newRound', function(data) {
@@ -69,13 +73,28 @@ socket.on('newRound', function(data) {
 });
 
 socket.on('badLiar', function() {
-	// The player tried to lie with a too low number
+	log ('You lie must be larger than the score of the previous opponent')
+	$('#lieButton').prop('disabled', false);
+	$('#1stLie').prop('disabled', false);
+	$('#2ndLie').prop('disabled', false);
+	$('liftButton').prop('disabled', false);
 });
+
 socket.on('gameReady', function() {
 	log('Game ready');
 	console.log(startButton);
 	$("#startButton").show();
 });
+
+socket.on('badCall', function() {
+	log('You cannot call a score lower than the previous score');
+	log('Lying or lifting are your only options');
+	$('#lieButton').prop('disabled', false);
+	$('#1stLie').prop('disabled', false);
+	$('#2ndLie').prop('disabled', false);	
+	$('#liftButton').prop('disabled', false);
+});
+
 
 function endTurn() {
 	playControls.map(el => el.setAttribute('disabled', true));
@@ -96,12 +115,12 @@ function enablePlayControls() {
 $(document).ready(function() {
     $("#joinButton").click(function () {
         socket.emit('addPlayer', {name: $("#nameField").val()});
-		$(".startControls").hide();
+		$(".joinControls").hide();
 	})
 	
 	$("#startButton").click (function (){
 		socket.emit('start');
-		$(".playControls").style.visibility == 'visible';
+		//$(".playControls").style.visibility == 'visible';
 	})
 	
 	$("#rollButton").click(function() {
