@@ -1,12 +1,5 @@
 const socket = io('http://localhost:5000');
 //Variables
-const logTextarea = document.getElementById('logTextarea');
-const die1Field = document.getElementById('1stDie');
-const die2Field = document.getElementById('2ndDie');
-const lie1Field = document.getElementById('1stLie');
-const lie2Field = document.getElementById('2ndLie');
-const logTextArea = document.getElementById('log');
-const nameField = document.getElementById('nameField');
 const playControls = Array.from(document.getElementsByClassName('playControls'));
 
 
@@ -31,9 +24,11 @@ socket.on('playerCalled', function(data) {
 
 socket.on('returnRoll', function(data) {
 	console.log(data);
-	die1Field.value = parseInt(data.charAt(0));
-	die2Field.value = parseInt(data.charAt(1));
-	log('You rolled ' + die1Field.value + ' ' + die2Field.value);
+	$('#1stDie').val(parseInt(data.charAt(0)));
+	//die1Field.value = parseInt(data.charAt(0));
+	$('#2ndDie').val(parseInt(data.charAt(1)));
+	//die2Field.value = parseInt(data.charAt(1));
+	log('You rolled ' + $('#1stDie').val() + ' ' + $('#2ndDie').val());
 	// Display roll to player
 });
 
@@ -45,9 +40,10 @@ socket.on('playerJoined', function(data) {
 socket.on('gameStarting', () => {
 	console.log('The game is starting');
 
-	playControls.map(el => {
-		el.hidden = false;
-	});
+	$('.playControls').show();
+	//playControls.map(el => {
+		//el.hidden = false;
+//	});
 	$('#1stDie').show();
 	$('#2ndDie').show();
 	disablePlayControls();
@@ -97,19 +93,23 @@ socket.on('badCall', function() {
 
 
 function endTurn() {
-	playControls.map(el => el.setAttribute('disabled', true));
+	$('.playControls').prop('disabled', true);
 }
 
 function log(logString) {
-	logTextArea.value += logString + '\n';
+	$('#log').val($('#log').val() + logString + '\n');
+	//$('#log').append(logString + '\n');
+	//logTextArea.value += logString + '\n';
 }
 
 function disablePlayControls() {
-	playControls.map(el => (el.disabled = true));
+	$('.playControls').prop('disabled', true);
+	//playControls.map(el => (el.disabled = true));
 }
 
 function enablePlayControls() {
-	playControls.map(el => (el.disabled = false));
+	//playControls.map(el => (el.disabled = false));
+	$('.playControls').prop('disabled', true);
 }
 
 $(document).ready(function() {
