@@ -109,7 +109,7 @@ function disablePlayControls() {
 
 function enablePlayControls() {
 	//playControls.map(el => (el.disabled = false));
-	$('.playControls').prop('disabled', true);
+	$('.playControls').prop('disabled', false);
 }
 
 $(document).ready(function() {
