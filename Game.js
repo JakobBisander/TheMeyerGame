@@ -60,11 +60,6 @@ module.exports = class Game {
 	}
 
 	isHigher(dice) {
-		console.log({
-			first: this.rules.indexOf(dice),
-			previousDice: this.rules.indexOf(this.previousDice),
-			pre: this.previousDice
-		});
 		return this.rules.indexOf(dice) < this.rules.indexOf(this.previousDice);
 	}
 
