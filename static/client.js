@@ -9,7 +9,7 @@ socket.on('connect', () => {
 });
 
 //  Listeners
-socket.on('playerCalled', function(data) {
+socket.on('playerCalled', function (data) {
 	console.log({ data });
 
 	const { lastRoll, playerName } = data;
@@ -22,7 +22,7 @@ socket.on('playerCalled', function(data) {
 	// };
 });
 
-socket.on('returnRoll', function(data) {
+socket.on('returnRoll', function (data) {
 	console.log(data);
 	$('#1stDie').val(parseInt(data.charAt(0)));
 	//die1Field.value = parseInt(data.charAt(0));
@@ -32,7 +32,7 @@ socket.on('returnRoll', function(data) {
 	// Display roll to player
 });
 
-socket.on('playerJoined', function(data) {
+socket.on('playerJoined', function (data) {
 	log(data.name + ' joined the game');
 	console.log(data);
 	// Add data.name to log
@@ -42,52 +42,53 @@ socket.on('gameStarting', () => {
 
 	$('.playControls').show();
 	//playControls.map(el => {
-		//el.hidden = false;
-//	});
+	//el.hidden = false;
+	//	});
 	$('#1stDie').show();
 	$('#2ndDie').show();
 	disablePlayControls();
 	$('#startControls').hide();
 });
 
-socket.on('yourTurn', function(data) {
+socket.on('yourTurn', function (data) {
 	log('Your turn');
 	enablePlayControls();
 	$('#1stDie').val('');
 	$('#2ndDie').val('');
 });
 
-socket.on('newRound', function(data) {
+socket.on('newRound', function (data) {
 	const scoreBoard = document.getElementById('scoreBoard');
 	scoreBoard.value = 'The score is \n';
 	for (const player of data.players) {
 		scoreBoard.value += `${player.name} ${player.score}\n`;
 	}
+	log("New round")
 	// A new round is starting, and someone just lost.
 	// Data should contain the entire gamestate
 	// Update scoreboard
 });
 
-socket.on('badLiar', function() {
-	log ('You lie must be larger than the score of the previous opponent')
+socket.on('badLiar', function () {
+	log('You lie must be larger than the score of the previous opponent')
 	$('#lieButton').prop('disabled', false);
 	$('#1stLie').prop('disabled', false);
 	$('#2ndLie').prop('disabled', false);
 	$('liftButton').prop('disabled', false);
 });
 
-socket.on('gameReady', function() {
+socket.on('gameReady', function () {
 	log('Game ready');
 	console.log(startButton);
 	$("#startButton").show();
 });
 
-socket.on('badCall', function() {
+socket.on('badCall', function () {
 	log('You cannot call a score lower than the previous score');
 	log('Lying or lifting are your only options');
 	$('#lieButton').prop('disabled', false);
 	$('#1stLie').prop('disabled', false);
-	$('#2ndLie').prop('disabled', false);	
+	$('#2ndLie').prop('disabled', false);
 	$('#liftButton').prop('disabled', false);
 });
 
@@ -112,46 +113,53 @@ function enablePlayControls() {
 	$('.playControls').prop('disabled', false);
 }
 
-$(document).ready(function() {
-    $("#joinButton").click(function () {
-        socket.emit('addPlayer', {name: $("#nameField").val()});
+$(document).ready(function () {
+	$("#joinButton").click(function () {
+		socket.emit('addPlayer', { name: $("#nameField").val() });
 		$(".joinControls").hide();
 	})
-	
-	$("#startButton").click (function (){
+
+	$("#startButton").click(function () {
 		socket.emit('start');
 		//$(".playControls").style.visibility == 'visible';
 	})
-	
-	$("#rollButton").click(function() {
-        $("#rollButton").prop("disabled", true);
-        $("liftButton").prop("disabled", true);
-        socket.emit('roll');
+
+	$("#rollButton").click(function () {
+		$("#rollButton").prop("disabled", true);
+		$("liftButton").prop("disabled", true);
+		socket.emit('roll');
 	});
 
-	$("#callButton").click(function() {
-        const die1 = $("#1stDie").val();
-        const die2 = $("#2ndDie").val();
-        disablePlayControls();
-        socket.emit('call', [die1, die2]);
+	$("#callButton").click(function () {
+		const die1 = $("#1stDie").val();
+		const die2 = $("#2ndDie").val();
+		console.log(typeof die1);
+		console.log(die1 == "");
+		if (die1 == "" || die2 == "") {
+			log("You must roll before you can call");
+		}
+		else {
+			disablePlayControls();
+			socket.emit('call', [die1, die2]);
+		}
 	})
-	
+
 	$("#liftButton").click(function () {
-        disablePlayControls();
-        socket.emit('lift');
-        endTurn();
+		disablePlayControls();
+		socket.emit('lift');
+		endTurn();
 	})
-	
-	$("#lieButton").click(function(){
+
+	$("#lieButton").click(function () {
 		const lie1 = Math.floor($("#1stLie").val());
 		const lie2 = Math.floor($("#2ndLie").val());
-        if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
-            socket.emit('lie', [lie1, lie2]);
-            endTurn();
-        } else {
-            log('The values for the dice must be from 1 to 6');
-        }
-    })
+		if (lie1 <= 6 && lie1 >= 1 && lie2 <= 6 && lie2 >= 1) {
+			socket.emit('lie', [lie1, lie2]);
+			endTurn();
+		} else {
+			log('The values for the dice must be from 1 to 6');
+		}
+	})
 });
 
 // Emits
